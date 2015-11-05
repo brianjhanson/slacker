@@ -85,3 +85,21 @@ Meteor.startup ->
             Train Schedule for #{station_name}
             #{stops}
           """
+
+    @route 'mailchimp',
+      where: 'server',
+      path: '/weekly/count'
+      action: ->
+        that = @
+        list_id = 'c0f3ca5d9c'
+
+        Meteor.call 'fetchListCount', list_id, (error, result) ->
+          console.log 'mailchimp-data', result if result
+          console.log 'mailchimp-data-error', error if error
+          return if error
+          
+          that.response.writeHead(200, {'Content-Type': 'text/html'})
+          that.response.end """
+            Currently #{result} strong.
+          """
+
